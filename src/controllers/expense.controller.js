@@ -16,8 +16,6 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
 
   const { _id, title, amount, date, description, category } = req.body;
   const { user } = req;
-  console.log(req);
-  
 
   if (!title || !amount || !date || !category) {
     throw new ApiError(400, "* field are required");
@@ -26,14 +24,6 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
   //   if (!username) {
   //     throw new ApiError(400, "username is required");
   //   }
-
-  const userPhotoPath = req.files?.userPhoto[0]?.path;
-
-  if (!userPhotoPath) {
-      throw new ApiError(400, "No avator Image");
-    }
-
-  const userPhoto = await uploadFileOnCloudinary(userPhotoPath);
 
   if (_id) {
     const existedExpense = await Expense.findOne({ _id });
@@ -59,8 +49,19 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new ApiResponse(200, updatedExpense, "Expense updated successfully"));
+      .json(
+        new ApiResponse(200, updatedExpense, "Expense updated successfully")
+      );
   }
+
+  const userPhotoPath = req.files?.userPhoto[0]?.path;
+
+  if (!userPhotoPath) {
+    throw new ApiError(400, "No avator Image");
+  }
+
+  const userPhoto = await uploadFileOnCloudinary(userPhotoPath);
+
   const expense = await Expense.create({
     userId: user._id,
     title: title,
@@ -78,19 +79,20 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedExpense, "Expense created successfully"));
 });
 
-const getExpenses = asyncHandler(async(req, res) => {
+const getExpenses = asyncHandler(async (req, res) => {
   const { user } = req;
   const expenses = await Expense.find({ userId: user._id });
 
-  return res.status(200).json(new ApiResponse(200, expenses, "Expenses fetched successfully"));
-  
+  return res
+    .status(200)
+    .json(new ApiResponse(200, expenses, "Expenses fetched successfully"));
 });
 
-const deleteExpense = asyncHandler(async(req, res) => {
+const deleteExpense = asyncHandler(async (req, res) => {
   const { user } = req;
   const { expenseId } = req.params;
 
-  const expense = await Expense.findByIdAndDelete(expenseId);  
+  const expense = await Expense.findByIdAndDelete(expenseId);
 
   if (!expense) {
     throw new ApiError(404, "Expense not found");
@@ -98,7 +100,9 @@ const deleteExpense = asyncHandler(async(req, res) => {
 
   const updatedExpense = await Expense.find({ userId: user._id });
 
-  return res.status(200).json(new ApiResponse(200, updatedExpense, "Expense deleted successfully"));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedExpense, "Expense deleted successfully"));
 });
 
 export { saveOrUpdateExpense, getExpenses, deleteExpense };
