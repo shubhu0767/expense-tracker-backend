@@ -11,6 +11,10 @@ const expenseSchema = new Schema({
         required: true,
         lowercase: true,
     },
+    userPhoto: {
+      type: String,
+      required: true,
+    },
     amount:{
         type: Number,
         required: true,

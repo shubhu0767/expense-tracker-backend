@@ -27,6 +27,14 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
   //     throw new ApiError(400, "username is required");
   //   }
 
+  const userPhotoPath = req.files?.userPhoto[0]?.path;
+
+  if (!userPhotoPath) {
+      throw new ApiError(400, "No avator Image");
+    }
+
+  const userPhoto = await uploadFileOnCloudinary(userPhotoPath);
+
   if (_id) {
     const existedExpense = await Expense.findOne({ _id });
 
@@ -37,6 +45,7 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
       description: description || existedExpense.description,
       category: category || existedExpense.category,
       userId: user._id,
+      userPhoto: existedExpense.userPhoto,
       _id: _id,
     };
 
@@ -59,6 +68,7 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
     date: new Date(date),
     description: description,
     category: category,
+    userPhoto: userPhoto.url,
   });
 
   const updatedExpense = await Expense.findById(expense._id);
