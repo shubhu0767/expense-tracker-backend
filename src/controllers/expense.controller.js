@@ -14,7 +14,7 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
   // save the expense entity
   // return the updated or saved expense entity
 
-  const { _id, title, amount, date, description, category } = req.body;
+  const { _id, title, amount, date, description, category, phoneNumber, seatNumber } = req.body;
   const { user } = req;
 
   if (!title || !amount || !date || !category) {
@@ -36,6 +36,8 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
       category: category || existedExpense.category,
       userId: user._id,
       userPhoto: existedExpense.userPhoto,
+      phoneNumber: phoneNumber || existedExpense.phoneNumber,
+      seatNumber: seatNumber || existedExpense.seatNumber,
       _id: _id,
     };
 
@@ -70,6 +72,8 @@ const saveOrUpdateExpense = asyncHandler(async (req, res) => {
     description: description,
     category: category,
     userPhoto: userPhoto.url,
+    phoneNumber: phoneNumber,
+    seatNumber: seatNumber,
   });
 
   const updatedExpense = await Expense.findById(expense._id);

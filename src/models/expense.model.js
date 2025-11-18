@@ -11,6 +11,14 @@ const expenseSchema = new Schema({
         required: true,
         lowercase: true,
     },
+    phoneNumber: {
+        type: String,
+        required: true,
+    },
+    seatNumber: {
+        type: String,
+        required: true,
+    },
     userPhoto: {
       type: String,
       required: true,
